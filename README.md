@@ -1,4 +1,4 @@
-# Sangira Hospitality Cloud
+# SANGIRA-HOSPITALITY-CLOUD
 
 Sangira is a multi-tenant operations platform for hotels, restaurants, bars, and lounges. This repository contains the initial platform foundation and operational workflows for staff, inventory, and menu management.
 
@@ -71,6 +71,8 @@ Apply the migrations in order before using the corresponding routes:
 21. `supabase/migrations/20261105133000_hotel_extras.sql`
 22. `supabase/migrations/20261105140000_public_menu_read_access.sql`
 23. `supabase/migrations/20261105141000_business_discovery.sql`
+24. `supabase/migrations/20261105150000_hotel_manager_scope.sql`
+25. `supabase/migrations/20261105160000_restaurant_manager_role.sql`
 
 Migrations are applied in timestamp order and never run automatically. Review pending changes with `supabase db push --dry-run` before applying them with `supabase db push`.
 
