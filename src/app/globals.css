@@ -1,8 +1,9 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  color-scheme: light;
+  --background: #f7f8f6;
+  --foreground: #17211c;
 }
 
 @theme inline {
@@ -12,15 +13,58 @@
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+.form-input {
+  display: block;
+  width: 100%;
+  margin-top: 0.5rem;
+  border: 1px solid #d6ded8;
+  border-radius: 0.5rem;
+  background: white;
+  padding: 0.75rem 0.875rem;
+  color: #17211c;
+  outline: none;
+  transition:
+    border-color 150ms ease,
+    box-shadow 150ms ease;
+}
+
+.form-input:focus {
+  border-color: #3e715c;
+  box-shadow: 0 0 0 3px rgb(62 113 92 / 15%);
+}
+
+[data-theme="dark"] {
+  color-scheme: dark;
+  --background: #0f1512;
+  --foreground: #e6ece8;
+}
+[data-theme="dark"] .bg-white,
+[data-theme="dark"] .form-input { background-color: #17211c; }
+[data-theme="dark"] .bg-\[\#f7f8f6\],
+[data-theme="dark"] .hover\:bg-\[\#f7f8f6\]:hover,
+[data-theme="dark"] .bg-\[\#f2f4f2\] { background-color: #1d2822; }
+[data-theme="dark"] .text-\[\#17211c\],
+[data-theme="dark"] .text-\[\#153d32\],
+[data-theme="dark"] .text-\[\#29483c\],
+[data-theme="dark"] .text-\[\#33463a\],
+[data-theme="dark"] .form-input { color: #e6ece8; }
+[data-theme="dark"] .text-\[\#64736a\],
+[data-theme="dark"] .text-\[\#85938a\],
+[data-theme="dark"] .text-\[\#53635a\] { color: #a3b1a8; }
+[data-theme="dark"] .border-\[\#e3e9e4\],
+[data-theme="dark"] .border-\[\#d6ded8\],
+[data-theme="dark"] .form-input { border-color: #2c3b33; }
+[data-theme="dark"] .divide-\[\#edf0ed\] > :not(:last-child),
+[data-theme="dark"] .divide-\[\#eef2ef\] > :not(:last-child) { border-color: #2c3b33; }
+[data-theme="dark"] .bg-\[\#fff1ee\] { background-color: #3a1f1b; }
+[data-theme="dark"] .text-\[\#9c392d\] { color: #f0a398; }
+[data-theme="dark"] .bg-\[\#edf6ef\],
+[data-theme="dark"] .bg-\[\#e8f4ee\] { background-color: #1b3326; }
+[data-theme="dark"] .text-\[\#285c3e\] { color: #9fd7b3; }
+[data-theme="dark"] .bg-\[\#fff9ed\] { background-color: #35290f; }
