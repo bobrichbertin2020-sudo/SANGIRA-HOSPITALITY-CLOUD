@@ -82,6 +82,8 @@ Migrations are applied in timestamp order and never run automatically. Review pe
 
 **Documents.** Private `sangira-documents` bucket; uploads are validated (type by content, 10 MB max), isolated by business, and downloaded through 60-second signed URLs.
 
+**Email confirmation links.** The app callback accepts Supabase PKCE `code` links and token-hash links. To make signup confirmation work when the email is opened in another browser, update the Supabase **Confirm signup** email template to use `<a href="{{ .RedirectTo }}?token_hash={{ .TokenHash }}&amp;type=signup">Confirm your email</a>` instead of `{{ .ConfirmationURL }}`. Set the hosted Auth Site URL to the production origin and allow both the production and local `/auth/callback` URLs in Redirect URLs. Configure the corresponding URLs in local Supabase Auth as well.
+
 ## Server environment
 
 See `.env.example`. Required beyond the Supabase keys: `SUPABASE_SERVICE_ROLE_KEY`, `ORDER_SESSION_SECRET`, `APP_BASE_URL`, `PAYMENT_CALLBACK_SECRET`, and the MTN / Airtel sandbox credentials for mobile money. Callbacks require a public HTTPS URL.

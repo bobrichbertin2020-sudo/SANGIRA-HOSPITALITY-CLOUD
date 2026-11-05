@@ -3,26 +3,58 @@ import { NextResponse, type NextRequest } from "next/server";
 import { RECOVERY_COOKIE } from "@/lib/settings/options";
 import { createClient } from "@/lib/supabase/server";
 
-// Completes Supabase email links (confirmation, email change, recovery) by exchanging the
-// one-time code for a session.
+const emailOtpTypes = [
+  "signup",
+  "invite",
+  "magiclink",
+  "recovery",
+  "email_change",
+  "email",
+] as const;
+
+// Supports token-hash links that work across browsers, plus Supabase's PKCE code links.
 export async function GET(request: NextRequest) {
   const { origin, searchParams } = request.nextUrl;
+  const tokenHash = searchParams.get("token_hash");
+  const type = searchParams.get("type");
   const code = searchParams.get("code");
 
-  if (!code) {
-    return NextResponse.redirect(`${origin}/sign-in?error=invalid`);
-  }
-
   const supabase = await createClient();
-  const { error } = await supabase.auth.exchangeCodeForSession(code);
-  if (error) {
-    console.error("Email link exchange failed:", error.message);
-    return NextResponse.redirect(`${origin}/sign-in?error=link`);
+  let isRecovery = false;
+
+  if (tokenHash) {
+    const otpType = emailOtpTypes.find((allowedType) => allowedType === type);
+    if (!/^[0-9a-f]{64}$/i.test(tokenHash) || !otpType) {
+      return NextResponse.redirect(new URL("/sign-in?error=invalid", origin));
+    }
+
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash: tokenHash,
+      type: otpType,
+    });
+    if (error) {
+      console.error("Email token verification failed:", error.message);
+      return NextResponse.redirect(new URL("/sign-in?error=link", origin));
+    }
+
+    isRecovery = otpType === "recovery";
+  } else if (code) {
+    const { error } = await supabase.auth.exchangeCodeForSession(code);
+    if (error) {
+      console.error("Email link exchange failed:", error.message);
+      return NextResponse.redirect(new URL("/sign-in?error=link", origin));
+    }
+  } else {
+    return NextResponse.redirect(new URL("/sign-in?error=invalid", origin));
   }
 
   const cookieStore = await cookies();
-  if (cookieStore.get(RECOVERY_COOKIE)) {
+  if (cookieStore.has(RECOVERY_COOKIE)) {
+    isRecovery ||= !tokenHash;
     cookieStore.delete(RECOVERY_COOKIE);
+  }
+
+  if (isRecovery) {
     return NextResponse.redirect(`${origin}/reset-password`);
   }
 
